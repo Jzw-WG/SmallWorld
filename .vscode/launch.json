@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - SmallWorldApplication",
+            "request": "launch",
+            "mainClass": "app.SmallWorldApplication",
+            "projectName": "SmallWorld"
+        }
+    ]
+}
