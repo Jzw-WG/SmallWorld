@@ -20,4 +20,6 @@ README.html
 *.zip
 *.tar
 *.bin
-/bin
+*.class
+
+/bin/*
