@@ -14,9 +14,9 @@ import java.awt.color.*;
 
 public class SmallWorldApplication{
     int pointSize = 8;
-    public static final int worldSize = 30;
-    public static final int K = 4;
-    public static final double rate = 0.4;
+    public static final int worldSize = 1000;
+    public static final int K = 10;
+    public static final double rate = 0.001;
 
     JFrame jFrame;
     JButton jButton;
@@ -46,9 +46,9 @@ public class SmallWorldApplication{
     
     public void go() {
         jFrame = new JFrame();
-        jButton = new JButton("dian");
-        jButton2 = new JButton("cal");
-        jButton3 = new JButton("clear");
+        jButton = new JButton("ReWire");
+        jButton2 = new JButton("Cal");
+        jButton3 = new JButton("Clear");
         jPanel = new JPanel();       
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.getContentPane().add(BorderLayout.SOUTH, jPanel);
@@ -59,14 +59,14 @@ public class SmallWorldApplication{
         // jFrame.getContentPane().add(BorderLayout.SOUTH, jButton2);
         MyDrawPanel drawPanel = new MyDrawPanel();
         jFrame.getContentPane().add(BorderLayout.CENTER, drawPanel);
-        jButton.addActionListener(new dian());
+        jButton.addActionListener(new reWire());
         jButton2.addActionListener(new cal());
         jButton3.addActionListener(new clear());
         jFrame.setSize(640, 720); 
         jFrame.setVisible(true);
     }
 
-    class dian implements ActionListener {
+    class reWire implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
             // for (int i = 0; i < SmallWorld.worldSize * SmallWorld.K/2; i++) {
@@ -100,7 +100,7 @@ public class SmallWorldApplication{
             //     }
             // }
             SmallWorld.clearDistance();
-            double sum = 0;
+            double LSum = 0;
             double psum = 0;
             for (int i = 0; i < SmallWorld.worldSize; i++) {
                 SmallWorld.getMinLength(SmallWorld.pointList.get(i));
@@ -108,11 +108,23 @@ public class SmallWorldApplication{
                     psum = psum + SmallWorld.pointList.get(i).distanceList.get(j);
                 }
                 psum = psum/ SmallWorld.pointList.get(i).distanceList.size();
-                sum = sum + psum;
+                LSum = LSum + psum;
             }
-            sum = sum/SmallWorld.worldSize;
+            LSum = LSum/SmallWorld.worldSize;
+            System.out.println("L: " + LSum);
 
-            System.out.println(sum);
+            double CSum = 0;
+            int NaNCount = 0;
+            for (int i = 0; i < SmallWorld.worldSize; i++) {
+                if (SmallWorld.getCustering(SmallWorld.pointList.get(i)) <= 1) {
+                    CSum = CSum + SmallWorld.getCustering(SmallWorld.pointList.get(i));
+                } else {
+                    NaNCount++;
+                }
+                 
+            }
+            CSum = CSum/(SmallWorld.worldSize - NaNCount);
+            System.out.println("C: " + CSum);
         }
     }
 }

@@ -226,6 +226,18 @@ public class SmallWorld{
         return;
     }
 
+    public static double getCustering(Point point) {
+        int custering = 0;
+        int k = point.connectList.size();
+        int maxCustering = k*(k-1)/2;
+        for (int i = 0; i < linkedList.size(); i++) {
+            if (point.connectList.contains(linkedList.get(i)[0]) && point.connectList.contains(linkedList.get(i)[1])) {
+                custering++;
+            }
+        }
+        return ((double)custering)/2/maxCustering;
+    }
+
     public static void clearDistance() {
         for (int i = 0; i < pointList.size(); i++) {
             for (int j = 0; j < worldSize; j++) {
