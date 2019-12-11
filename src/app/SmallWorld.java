@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class SmallWorld{
     
     public static final int RADIUS = 300;
 
-    public static int worldSize;
-    public static int K;
-    public static double randomRate;
-    public static int[][] image;
-    public static LinkedList<Point> pointList;
-    public static LinkedList<Point[]> linkedList;
+    public int worldSize;
+    public int K;
+    public double randomRate;
+    public int[][] image;
+    public LinkedList<Point> pointList;
+    public LinkedList<Point[]> linkedList;
 
     public class Point{
         double X;
@@ -76,7 +74,7 @@ public class SmallWorld{
                    lindex++;
                 }
                 int vindex = validIndex(i + lindex);
-                SmallWorld.connectPoint(SmallWorld.pointList.get(i), SmallWorld.pointList.get(vindex));
+                connectPoint(pointList.get(i), pointList.get(vindex));
             }
             
         }
@@ -84,15 +82,15 @@ public class SmallWorld{
 
     public int validIndex(int index) {
         if (index < 0) {
-            index = validIndex(SmallWorld.worldSize + index);
+            index = validIndex(worldSize + index);
         }
-        if (index > SmallWorld.worldSize - 1) {
-            index = validIndex(index - SmallWorld.worldSize);
+        if (index > worldSize - 1) {
+            index = validIndex(index - worldSize);
         }
         return index;
     }
 
-    public static Point[] findPair(Point point1, Point point2) {
+    public Point[] findPair(Point point1, Point point2) {
         for(int i = 0; i < linkedList.size()/2; i++) {
             if (linkedList.get(i)[0].index == point1.index && linkedList.get(i)[1].index == point2.index) {
                 return linkedList.get(i);
@@ -101,7 +99,7 @@ public class SmallWorld{
         return null;
     }
 
-    public static boolean connectPoint(Point point1, Point point2) {
+    public boolean connectPoint(Point point1, Point point2) {
         boolean result = true;
         if (point1.index == point2.index) {
             result = false;
@@ -116,8 +114,8 @@ public class SmallWorld{
             pair2[0] = point2;
             pair2[1] = point1;
             if (!linkedList.contains(pair) && !linkedList.contains(pair2)) {
-                SmallWorld.linkedList.add(pair);
-                SmallWorld.linkedList.add(pair2);
+                linkedList.add(pair);
+                linkedList.add(pair2);
             }  
         } else {
             result = false;
@@ -125,7 +123,7 @@ public class SmallWorld{
         return result;
     }
 
-    public static boolean disconnectPoint(Point point1, Point point2) {
+    public boolean disconnectPoint(Point point1, Point point2) {
         boolean result = true;
         if (point1.connectList.contains(point2) && point2.connectList.contains(point1)) {
             point1.connectList.remove(point2);
@@ -134,8 +132,8 @@ public class SmallWorld{
             Point[] pair2 = findPair(point2, point1);
 
             if (linkedList.contains(pair) && linkedList.contains(pair2)) {
-                SmallWorld.linkedList.remove(pair);
-                SmallWorld.linkedList.remove(pair2);
+                linkedList.remove(pair);
+                linkedList.remove(pair2);
             }
         } else {
             result = false;
@@ -143,22 +141,22 @@ public class SmallWorld{
         return result;
     }
 
-    public static void randomReconnect() {
-        int rdIndex = new Random().nextInt(SmallWorld.worldSize);
-        int rdReconnectIndex = new Random().nextInt(SmallWorld.worldSize);
+    public void randomReconnect() {
+        int rdIndex = new Random().nextInt(worldSize);
+        int rdReconnectIndex = new Random().nextInt(worldSize);
 
-        while (SmallWorld.pointList.get(rdIndex).connectList.size() == 0) {
+        while (pointList.get(rdIndex).connectList.size() == 0) {
             randomReconnect();
             return;
         }
 
-        int rdConnectedIndex = SmallWorld.pointList.get(rdIndex).connectList.get(new Random().nextInt(SmallWorld.pointList.get(rdIndex).connectList.size())).index;
+        int rdConnectedIndex = pointList.get(rdIndex).connectList.get(new Random().nextInt(pointList.get(rdIndex).connectList.size())).index;
 
-        while(rdIndex == rdReconnectIndex || SmallWorld.pointList.get(rdIndex).connectList.contains(SmallWorld.pointList.get(rdReconnectIndex))) {
-            rdReconnectIndex = new Random().nextInt(SmallWorld.worldSize);
+        while(rdIndex == rdReconnectIndex || pointList.get(rdIndex).connectList.contains(pointList.get(rdReconnectIndex))) {
+            rdReconnectIndex = new Random().nextInt(worldSize);
         }
 
-        if (disconnectPoint(SmallWorld.pointList.get(rdIndex), SmallWorld.pointList.get(rdConnectedIndex)) && connectPoint(SmallWorld.pointList.get(rdIndex), SmallWorld.pointList.get(rdReconnectIndex))) {
+        if (disconnectPoint(pointList.get(rdIndex), pointList.get(rdConnectedIndex)) && connectPoint(pointList.get(rdIndex), pointList.get(rdReconnectIndex))) {
             return;
         } else {
             randomReconnect();
@@ -166,18 +164,18 @@ public class SmallWorld{
         }
     }
 
-    public static void reconnect() {
+    public void reconnect() {
         
         List<Integer> hasReconnect = new ArrayList<>();
         for(int i = 0; i < linkedList.size()/2; i++) {
-            int rdReconnectIndex = new Random().nextInt(SmallWorld.worldSize);
+            int rdReconnectIndex = new Random().nextInt(worldSize);
             int rdDisconnectIndex = new Random().nextInt(2);
             if (linkedList.get(0)[0].index < linkedList.get(0)[1].index) {
-                while(linkedList.get(0)[rdDisconnectIndex].index == rdReconnectIndex || SmallWorld.pointList.get(linkedList.get(0)[rdDisconnectIndex].index).connectList.contains(SmallWorld.pointList.get(rdReconnectIndex))) {
-                    rdReconnectIndex = new Random().nextInt(SmallWorld.worldSize);
+                while(linkedList.get(0)[rdDisconnectIndex].index == rdReconnectIndex || pointList.get(linkedList.get(0)[rdDisconnectIndex].index).connectList.contains(pointList.get(rdReconnectIndex))) {
+                    rdReconnectIndex = new Random().nextInt(worldSize);
                 }
 
-                if (Math.random() < SmallWorld.randomRate) {
+                if (Math.random() < randomRate) {
                     Point chosenPoint = linkedList.get(0)[rdDisconnectIndex];
                     Point chosenPoint2 = linkedList.get(0)[rdDisconnectIndex == 0?1:0];
                     disconnectPoint(chosenPoint, chosenPoint2);
@@ -226,7 +224,7 @@ public class SmallWorld{
         return;
     }
 
-    public static double getCustering(Point point) {
+    public double getCustering(Point point) {
         int custering = 0;
         int k = point.connectList.size();
         int maxCustering = k*(k-1)/2;
@@ -238,7 +236,7 @@ public class SmallWorld{
         return ((double)custering)/2/maxCustering;
     }
 
-    public static void clearDistance() {
+    public void clearDistance() {
         for (int i = 0; i < pointList.size(); i++) {
             for (int j = 0; j < worldSize; j++) {
                 pointList.get(i).distanceList.set(j, Integer.MAX_VALUE);
@@ -246,7 +244,7 @@ public class SmallWorld{
         }
     }
 
-    public static List<Integer> alonePoint() {
+    public List<Integer> alonePoint() {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < pointList.size(); i++) {
             if (pointList.get(i).connectList.size() == 0) {

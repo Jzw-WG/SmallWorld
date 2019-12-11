@@ -14,6 +14,7 @@ import java.awt.color.*;
 
 public class SmallWorldApplication{
     int pointSize = 8;
+    public static SmallWorld smallWorld;
     public static final int worldSize = 1000;
     public static final int K = 10;
     public static final double rate = 0.001;
@@ -24,23 +25,11 @@ public class SmallWorldApplication{
     JButton jButton3;
     JPanel jPanel;
 
-    public class MyDrawPanel extends JPanel{
-        public void paintComponent(Graphics g) {
-            for (int i = 0; i < SmallWorld.worldSize; i++) {
-                g.setColor(Color.red);
-                g.fillOval((int) SmallWorld.pointList.get(i).X - pointSize/2, (int) SmallWorld.pointList.get(i).Y - pointSize/2, pointSize, pointSize);
-                for (int j = 0; j < SmallWorld.pointList.get(i).connectList.size(); j++) {
-                    if (SmallWorld.pointList.get(i).index < SmallWorld.pointList.get(i).connectList.get(j).index)
-                    g.drawLine((int) SmallWorld.pointList.get(i).X, (int) SmallWorld.pointList.get(i).Y, (int) SmallWorld.pointList.get(i).connectList.get(j).X, (int) SmallWorld.pointList.get(i).connectList.get(j).Y);
-                }
-            }
-            
-        } 
-    }
+    
 
     public static void main(String[] args) throws Exception {
         SmallWorldApplication app = new SmallWorldApplication();
-        SmallWorld smallWorld = new SmallWorld(SmallWorldApplication.worldSize, SmallWorldApplication.K, SmallWorldApplication.rate);
+        smallWorld = new SmallWorld(SmallWorldApplication.worldSize, SmallWorldApplication.K, SmallWorldApplication.rate);
         app.go();
     }
     
@@ -66,6 +55,21 @@ public class SmallWorldApplication{
         jFrame.setVisible(true);
     }
 
+    public class MyDrawPanel extends JPanel{
+        public void paintComponent(Graphics g) {
+            
+            for (int i = 0; i < smallWorld.worldSize; i++) {
+                g.setColor(Color.red);
+                g.fillOval((int) smallWorld.pointList.get(i).X - pointSize/2, (int) smallWorld.pointList.get(i).Y - pointSize/2, pointSize, pointSize);
+                for (int j = 0; j < smallWorld.pointList.get(i).connectList.size(); j++) {
+                    if (smallWorld.pointList.get(i).index < smallWorld.pointList.get(i).connectList.get(j).index)
+                    g.drawLine((int) smallWorld.pointList.get(i).X, (int) smallWorld.pointList.get(i).Y, (int) smallWorld.pointList.get(i).connectList.get(j).X, (int) smallWorld.pointList.get(i).connectList.get(j).Y);
+                }
+            }
+            
+        } 
+    }
+
     class reWire implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
@@ -74,7 +78,7 @@ public class SmallWorldApplication{
             //         SmallWorld.randomReconnect();
             //     }
             // }
-            SmallWorld.reconnect();
+            smallWorld.reconnect();
             jFrame.repaint();
         }
     }
@@ -87,7 +91,7 @@ public class SmallWorldApplication{
             //         SmallWorld.randomReconnect();
             //     }
             // }
-            SmallWorld smallWorld = new SmallWorld(SmallWorldApplication.worldSize, SmallWorldApplication.K, SmallWorldApplication.rate);
+            smallWorld = new SmallWorld(SmallWorldApplication.worldSize, SmallWorldApplication.K, SmallWorldApplication.rate);
             jFrame.repaint();
         }
     }
@@ -99,31 +103,31 @@ public class SmallWorldApplication{
             //         SmallWorld.randomReconnect();
             //     }
             // }
-            SmallWorld.clearDistance();
+            smallWorld.clearDistance();
             double LSum = 0;
             double psum = 0;
-            for (int i = 0; i < SmallWorld.worldSize; i++) {
-                SmallWorld.getMinLength(SmallWorld.pointList.get(i));
-                for (int j = 0; j < SmallWorld.pointList.get(i).distanceList.size(); j++) {
-                    psum = psum + SmallWorld.pointList.get(i).distanceList.get(j);
+            for (int i = 0; i < smallWorld.worldSize; i++) {
+                SmallWorld.getMinLength(smallWorld.pointList.get(i));
+                for (int j = 0; j < smallWorld.pointList.get(i).distanceList.size(); j++) {
+                    psum = psum + smallWorld.pointList.get(i).distanceList.get(j);
                 }
-                psum = psum/ SmallWorld.pointList.get(i).distanceList.size();
+                psum = psum/ smallWorld.pointList.get(i).distanceList.size();
                 LSum = LSum + psum;
             }
-            LSum = LSum/SmallWorld.worldSize;
+            LSum = LSum/smallWorld.worldSize;
             System.out.println("L: " + LSum);
 
             double CSum = 0;
             int NaNCount = 0;
-            for (int i = 0; i < SmallWorld.worldSize; i++) {
-                if (SmallWorld.getCustering(SmallWorld.pointList.get(i)) <= 1) {
-                    CSum = CSum + SmallWorld.getCustering(SmallWorld.pointList.get(i));
+            for (int i = 0; i < smallWorld.worldSize; i++) {
+                if (smallWorld.getCustering(smallWorld.pointList.get(i)) <= 1) {
+                    CSum = CSum + smallWorld.getCustering(smallWorld.pointList.get(i));
                 } else {
                     NaNCount++;
                 }
                  
             }
-            CSum = CSum/(SmallWorld.worldSize - NaNCount);
+            CSum = CSum/(smallWorld.worldSize - NaNCount);
             System.out.println("C: " + CSum);
         }
     }
