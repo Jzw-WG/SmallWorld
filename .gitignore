@@ -1,25 +1,29 @@
-*.sw?
-.#*
-*#
-*~
+HELP.md
+
+### STS ###
+.apt_generated
 .classpath
+.factorypath
 .project
 .settings
-bin
-build
-dependency-reduced-pom.xml
-*.sublime-*
-/scratch
+.springBeans
+.sts4-cache
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
-README.html
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
 
-*.log
-*.gz
-*.tmp
-*.zip
-*.tar
-*.bin
+### VS Code ###
+.vscode/
+
 *.class
-
-/bin/*
